@@ -8,25 +8,25 @@ import matplotlib.pyplot as plt
 
 
 class dataClass():
-    def __init__(self, data, type, data_set1, data_set2, data_set3):
+    def __init__(self, data, type, place, data_set_needed, data_set1, data_set2, data_set3):
         self.data = data
         self.type = type
+        self.place = place
         self.data1 = data_set1
         self.data2 = data_set2
         self.data3 = data_set3
+        self.list_data = [self.data1, self.data2, self.data3]
+        self.set = data_set_needed
 
-    def position(self):
-        data = []
-        list_data = [self.data1, self.data2, self.data3]
-        iteration = 1
-        while iteration <= 3:
-            for year in range(0, 3):
-                position = np.where(list_data[year] == int(None))
-                (x, y) = (position[0], position[1])
-                enrollment = list_data[year][x, y + iteration]
-                data.append(enrollment)
-            iteration += 1
-        return data
+    # def position(self):
+        # iteration = 1
+        # while iteration <= 3:
+        #     for set in range(0, 3):
+        #         position = np.where(self.list_data[self.set] == self.place)
+        #         (x, y) = (position[0], position[1])
+        #         self.data = self.list_data[set][x, y + iteration]
+
+        #     iteration += 1
 
     def country_computation(self):
         if self.type == 1:
@@ -34,11 +34,18 @@ class dataClass():
         elif self.type == 2:
             pass
 
-    def region_computation():
-        pass
+    def species_threathened_region(self):
+        iteration = 1
+        while iteration <= 3:
+            for set in range(0, 3):
+                position = np.where(self.list_data[self.set] == self.place)
+                (x, y) = (position[0], position[1])
+                self.data = self.list_data[set][x, y + iteration]
+
+            iteration += 1
 
 
-def user_input1(data_set3):
+def user_input(data_set3):
     valid = True
     while valid:
         # Asks the user to input the place for which they want data on.
@@ -57,52 +64,48 @@ def user_input1(data_set3):
             # If the user doesn't choose a valid place they are prompted to try again.
             print('You must enter a valid country or region.')
 
-    return type
-
-
-def user_input2(place, type):
     valid2 = True
     while valid2 == True:
         if type == 'country':
             requested_data = int(input(
-                f'''What data would you like on {place}\n '
-                Year with the highest population (Enter: 11)
-                Year with the lowest population (Enter: 12)
+                f'''What data would you like on {requested_place}\n 
+                Year with the highest population - Including population trend (Enter: 11)
+                Year with the lowest population - Including population trend (Enter: 12)
                 '''))
             if requested_data in range(1, 3):
                 valid2 = False
 
         if type == 'region':
             requested_data = input(
-                f'''What data would you like on {place}\n '
-                Total number of threatened species in the region (Enter: 21)
+                f'''What data would you like on {requested_place}\n 
+                Total number of Plants, Fish, Birds, and Mammals threatened in the region (Enter: 21)
+                Total number of square km in the region (Enter: 21)
                 ''')
             if requested_data in range(1, 3):
                 valid2 = False
         else:
             print('Invalid data request please try again')
 
-    return requested_data
+    return requested_data, requested_place, type
 
 
 def data_plotting():
+    # Pheonix implement
     pass
 
 
 def main():
-    # Creates a numpy array from the population data and stores it in a variable.
+    # Creates a numpy array from the population, species, and country data and stores it in a its respective variable.
     population_data = np.genfromtxt(
         'Population_Data.csv', delimiter=',', skip_header=True)
-    # Creates a numpy array from the species data and stores it in a variable.
     species_data = np.genfromtxt(
         'Threatened_Species.csv', delimiter=',', skip_header=True)
-    # Creates a numpy array from the country data and stores it in a variable.
     country_data = np.genfromtxt(
         'Country_Data.csv', delimiter=',', skip_header=True)
 
-    if user_input1(country_data) == 'country':
+    if user_input(country_data)[2] == 'country':
         pass
-    elif user_input1(country_data) == 'region':
+    elif user_input(country_data)[2] == 'region':
         pass
 
 
