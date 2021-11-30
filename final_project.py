@@ -50,7 +50,7 @@ def user_input(data_set3):
     while valid:
         # Asks the user to input the place for which they want data on.
         requested_place = str(input(
-            'Please enter a country name or region: '))
+            'Please enter a country name or region: ')).capitalize()
         if requested_place in data_set3:
             if requested_place in data_set3[:, 0]:
                 print('You have chosen a country')
@@ -68,9 +68,9 @@ def user_input(data_set3):
     while valid2 == True:
         if type == 'country':
             requested_data = int(input(
-                f'''What data would you like on {requested_place}\n 
-                Year with the highest population - Including population trend (Enter: 11)
-                Year with the lowest population - Including population trend (Enter: 12)
+                f'''What data would you like on {requested_place}
+Year with the highest population - Including population trend (Enter: 11)
+Year with the lowest population - Including population trend (Enter: 12)
                 '''))
             if requested_data in range(1, 3):
                 valid2 = False
@@ -97,11 +97,11 @@ def data_plotting():
 def main():
     # Creates a numpy array from the population, species, and country data and stores it in a its respective variable.
     population_data = np.genfromtxt(
-        'Population_Data.csv', delimiter=',', skip_header=True)
+        'Population_Data.csv', delimiter=',', skip_header=True, dtype=str)
     species_data = np.genfromtxt(
-        'Threatened_Species.csv', delimiter=',', skip_header=True)
+        'Threatened_Species.csv', delimiter=',', skip_header=True, dtype=str)
     country_data = np.genfromtxt(
-        'Country_Data.csv', delimiter=',', skip_header=True)
+        'Country_Data.csv', delimiter=',', skip_header=True, dtype=str)
 
     if user_input(country_data)[2] == 'country':
         pass
