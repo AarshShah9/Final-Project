@@ -44,8 +44,14 @@ class dataClass():
                 years = [i for i in range(2000,2021)]#list for years
                 population = list(self.population_data[pos[0][0]])#creates list using position
                 del population[0] # deletes name of country in data
+                iteration = 0
+                for i in population:
+                    population[iteration] = int(i)/1000
+                    iteration += 1
+                print(population)
                 plt.plot(years,population, 'r--', label='Population Trend in {}'.format(user_input))
-            
+                plt.ylabel('Population in thousands')
+                plt.xlabel('Years')
                 plt.show()
                 
                 
@@ -94,12 +100,6 @@ def main():
 
     
         
-
-
-
-
-
-
 
 if __name__ == '__main__':
     main()
