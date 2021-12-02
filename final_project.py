@@ -25,14 +25,10 @@ class dataClass():
     def countries_in_continent(self):
         # finds positions of country in region or continent
         position = np.where(self.country_data == self.input)
-        list = []
-        for i in position[0]:
-            list.append(self.country_data[i][0])
-
-        return list
+        return [self.country_data[i][0] for i in position[0]]
 
     def print_countries(self):
-        print(", ".join(i for i in self.countries_in_continent()))
+        print(", ".join(self.countries_in_continent()))
 
         choice = -1
         user_input = input('\nSelect a country for more data: ').title()
@@ -52,10 +48,8 @@ class dataClass():
                 # creates list using position
                 population = list(self.population_data[pos[0][0]])
                 del population[0]  # deletes name of country in data
-                iteration = 0
-                for i in population:
+                for iteration, i in enumerate(population):
                     population[iteration] = int(i)/1000
-                    iteration += 1
                 print(population)
                 plt.plot(years, population, 'r--',
                          label='Population Trend in {}'.format(user_input))
@@ -144,7 +138,7 @@ def main():
     while user_input not in test1.return_data()[3]:
         user_input = input('Please enter a Country or a Continent: ').title()
         if user_input in test1.return_data()[3]:
-            data = dataClass(user_input, type1())
+            data = dataClass(user_input, type1(user_input))
             menu(data)
         else:
             print('You must select a valid region or continent')
