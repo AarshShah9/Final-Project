@@ -8,32 +8,45 @@ import matplotlib.pyplot as plt
 
 
 class dataClass():
-    def __init__(self, inp):
-        self.inp = inp
+    def __init__(self, input, type):
+        self.input = input
         self.population_data = np.genfromtxt(
-        'Population_Data.csv', delimiter=',', skip_header=True, dtype=str)
+            'Population_Data.csv', delimiter=',', skip_header=True, dtype=str)
         self.species_data = np.genfromtxt(
-        'Threatened_Species.csv', delimiter=',', skip_header=True, dtype=str)
+            'Threatened_Species.csv', delimiter=',', skip_header=True, dtype=str)
         self.country_data = np.genfromtxt(
-        'Country_Data.csv', delimiter=',', skip_header=True, dtype=str)
+            'Country_Data.csv', delimiter=',', skip_header=True, dtype=str)
+        self.type = type
+
+    def return_data(self):
+        """Method that allows the variables declared in the class to be accessed globally via indexing of the list"""
+        return [self.input, self.population_data, self.species_data, self.country_data, self.type]
+
+    def countries_in_continent(self):
+        # finds positions of country in region or continent
+        position = np.where(self.country_data == self.input)
+        # print(position)
+        # print(", ".join(self.country_data[i][0] for i in position[0]))
+        # list = [(self.country_data[i][0] for i in position[0])]
+        list = []
+        for i in position[0]:
+            country1 = self.country_data[i][0]
+            list += country1
+
+        return list
 
     def print_countries(self):
-
-        position = np.where(self.country_data == self.inp)#finds positions of country in region or continent
-
-        for i in position[0]:
-
-            print('{}'.format(self.country_data[i][0]), end =', ')
-
-        print()#empty line
+        self.countries_in_continent()
+        # print(", ".join(self.country_data[i][0]
+        #       for i in self.countries_in_continent()))
 
         choice = -1
-        user_input = input('Select a country for more data: ').title()
+        user_input = input('\nSelect a country for more data: ').title()
 
         while choice != 0:
 
-            
-            print('If you would like to see the population trend in the past 20 years select: 1')
+            print(
+                'If you would like to see the population trend in the past 20 years select: 1')
             print('If you would like to see amount of threatened species select: 2')
             print('To change selected country select: 3')
             print('To quit select: 0')
@@ -41,65 +54,105 @@ class dataClass():
 
             if choice == 1:
                 pos = np.where(self.population_data == user_input)
-                years = [i for i in range(2000,2021)]#list for years
-                population = list(self.population_data[pos[0][0]])#creates list using position
-                del population[0] # deletes name of country in data
+                years = [i for i in range(2000, 2021)]  # list for years
+                # creates list using position
+                population = list(self.population_data[pos[0][0]])
+                del population[0]  # deletes name of country in data
                 iteration = 0
                 for i in population:
                     population[iteration] = int(i)/1000
                     iteration += 1
                 print(population)
-                plt.plot(years,population, 'r--', label='Population Trend in {}'.format(user_input))
+                plt.plot(years, population, 'r--',
+                         label='Population Trend in {}'.format(user_input))
                 plt.ylabel('Population in thousands')
                 plt.xlabel('Years')
                 plt.show()
-                
-                
-                
-            
 
     def print_countries_population(self):
         pass
 
-    def change_selected(self,inp):
-        self.inp = inp
+    def compute_species_data(self):
 
-    def menu(self):
-        user_choice = -1
-        while user_choice != 0:
+        if self.type == 'Continent':
+            iterable = self.countries_in_continent()
+        else:
+            iterable = list(self.input)
 
-            print('To see countries in selected region or continent select: 1')
-            print('To see countries population in selected region or continent select: 2')
-            print('To change selected region or continent select: 3')
-            print('To quit select: 0')
+        plant_data = []
+        fish_data = []
+        bird_data = []
+        mammal_data = []
 
-            user_choice = int(input('Enter selection: '))
+        for i in iterable:
+            position = np.where(self.species_data == i)
+            (x, y) = position[0], position[1]
+            plant_data += self.species_data[x][y+1]
+            fish_data += self.species_data[x][y+2]
+            bird_data += self.species_data[x][y+3]
+            mammal_data += self.species_data[x][y+4]
 
-            if user_choice == 1:
-                self.print_countries()
+        return [sum(plant_data), sum(fish_data), sum(bird_data), sum(mammal_data)]
 
-            if user_choice == 3:
-                new_inp = input('Select a new region or continent: ').title()
-                self.change_selected(new_inp)
+    def change_selected(self, input):
+        self.input = input
 
+
+def print_chosen_data(data):
+    pass
+
+
+def menu(data):
+    user_choice = -1
+
+    while user_choice != 0:
+        print('To quit select: 0')
+        print('To see countries population in selected country or continent select: 1')
+        print('To change selected country or continent select: 2')
+        print('To see total number of Plants, Fish, Birds, and Mammals in the chosen continent or country select: 3')
+
+        if data.return_data()[4] == 'Continent':
+            print('To see countries in selected region or continent select: 4')
+
+        user_choice = int(input('Enter selection: '))
+
+        if user_choice == 1:
+            pass
+
+        elif user_choice == 2:
+            new_input = input('Select a new region or continent: ').title()
+            data.change_selected(new_input)
+
+        elif (user_choice == 3):
+            data.compute_species_data()
+            print_chosen_data(data)
+
+        elif (user_choice == 4) and data.return_data()[4] == 'Continent':
+            data.print_countries()
+
+        else:
+            print('Please Try again that is an invalid choice')
 
 
 def main():
-    # Creates a numpy array from the population, species, and country data and stores it in a its respective variable.
-    country_list = np.array(np.genfromtxt('Country_Data.csv',delimiter=',', skip_header=True, dtype=str))
-
+    test = dataClass('Africa', 'Continent')
+    print(test.countries_in_continent())
     print('Eng 233 Multi Region Data')
     user_input = 'not valid'
-    while user_input not in country_list:
-        user_input = input('Please enter a Region or a Continent: ').title()
-        if user_input in country_list:
-            data = dataClass(user_input)
-            data.menu()
+    while user_input not in test.return_data()[3]:
+        user_input = input('Please enter a Country or a Continent: ').title()
+        if user_input in test.return_data()[3]:
+            # Checks to see if the user's input is a continent or country
+            if data.return_data()[0] in data.return_data()[3][:, 1]:
+                type = 'Continent'
+            else:
+                type = 'Country'
+
+            data = dataClass(user_input, type)
+            menu(data)
         else:
             print('You must select a valid region or continent')
 
-    
-        
 
 if __name__ == '__main__':
     main()
