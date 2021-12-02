@@ -25,20 +25,14 @@ class dataClass():
     def countries_in_continent(self):
         # finds positions of country in region or continent
         position = np.where(self.country_data == self.input)
-        # print(position)
-        # print(", ".join(self.country_data[i][0] for i in position[0]))
-        # list = [(self.country_data[i][0] for i in position[0])]
         list = []
         for i in position[0]:
-            country1 = self.country_data[i][0]
-            list += country1
+            list.append(self.country_data[i][0])
 
         return list
 
     def print_countries(self):
-        self.countries_in_continent()
-        # print(", ".join(self.country_data[i][0]
-        #       for i in self.countries_in_continent()))
+        print(", ".join(i for i in self.countries_in_continent()))
 
         choice = -1
         user_input = input('\nSelect a country for more data: ').title()
@@ -94,12 +88,11 @@ class dataClass():
 
         return [sum(plant_data), sum(fish_data), sum(bird_data), sum(mammal_data)]
 
+    def size_of_region(self):
+        pass
+
     def change_selected(self, input):
         self.input = input
-
-
-def print_chosen_data(data):
-    pass
 
 
 def menu(data):
@@ -113,6 +106,8 @@ def menu(data):
 
         if data.return_data()[4] == 'Continent':
             print('To see countries in selected region or continent select: 4')
+        else:
+            print()
 
         user_choice = int(input('Enter selection: '))
 
@@ -125,7 +120,6 @@ def menu(data):
 
         elif (user_choice == 3):
             data.compute_species_data()
-            print_chosen_data(data)
 
         elif (user_choice == 4) and data.return_data()[4] == 'Continent':
             data.print_countries()
@@ -134,21 +128,25 @@ def menu(data):
             print('Please Try again that is an invalid choice')
 
 
+def type1(user_input):
+    test2 = dataClass(user_input, None)
+    # Checks to see if the user's input is a continent or country
+    if test2.return_data()[0] in test2.return_data()[3][:, 1]:
+        type = 'Continent'
+    else:
+        type = 'Country'
+
+    return type
+
+
 def main():
-    test = dataClass('Africa', 'Continent')
-    print(test.countries_in_continent())
+    test1 = dataClass(None, None)
     print('Eng 233 Multi Region Data')
     user_input = 'not valid'
-    while user_input not in test.return_data()[3]:
+    while user_input not in test1.return_data()[3]:
         user_input = input('Please enter a Country or a Continent: ').title()
-        if user_input in test.return_data()[3]:
-            # Checks to see if the user's input is a continent or country
-            if data.return_data()[0] in data.return_data()[3][:, 1]:
-                type = 'Continent'
-            else:
-                type = 'Country'
-
-            data = dataClass(user_input, type)
+        if user_input in test1.return_data()[3]:
+            data = dataClass(user_input, type1())
             menu(data)
         else:
             print('You must select a valid region or continent')
