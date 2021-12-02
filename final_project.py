@@ -130,13 +130,11 @@ def menu(data):
 
 def type1(user_input):
     test2 = dataClass(user_input, None)
-    # Checks to see if the user's input is a continent or country
-    if test2.return_data()[0] in test2.return_data()[3][:, 1]:
-        type = 'Continent'
-    else:
-        type = 'Country'
-
-    return type
+    return (
+        'Continent'
+        if test2.return_data()[0] in test2.return_data()[3][:, 1]
+        else 'Country'
+    )
 
 
 def main():
