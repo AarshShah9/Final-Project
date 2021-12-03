@@ -61,26 +61,32 @@ class dataClass():
         pass
 
     def compute_species_data(self):
+        # new_species_data = self.species_data.astype(int)
 
         if self.type == 'Continent':
-            iterable = self.countries_in_continent()
+            places = self.countries_in_continent()
         else:
-            iterable = list(self.input)
+            places = [self.input]
 
         plant_data = []
         fish_data = []
         bird_data = []
         mammal_data = []
 
-        for i in iterable:
+        for i in places:
             position = np.where(self.species_data == i)
-            (x, y) = position[0], position[1]
-            plant_data += self.species_data[x][y+1]
-            fish_data += self.species_data[x][y+2]
-            bird_data += self.species_data[x][y+3]
-            mammal_data += self.species_data[x][y+4]
+            (x, y) = position[0][0], position[1][0]
+            plant_data.append(self.species_data[x][y+1])
+            fish_data.append(self.species_data[x][y+2])
+            bird_data.append(self.species_data[x][y+3])
+            mammal_data.append(self.species_data[x][y+4])
 
-        return [sum(plant_data), sum(fish_data), sum(bird_data), sum(mammal_data)]
+        plant_data_int = list(map(int, plant_data))
+        fish_data_int = list(map(int, fish_data))
+        bird_data_int = list(map(int, bird_data))
+        mammal_data_int = list(map(int, mammal_data))
+
+        return [sum(plant_data_int), sum(fish_data_int), sum(bird_data_int), sum(mammal_data_int)]
 
     def size_of_region(self):
         pass
@@ -113,7 +119,7 @@ def menu(data):
             data.change_selected(new_input)
 
         elif (user_choice == 3):
-            data.compute_species_data()
+            print(data.compute_species_data())
 
         elif (user_choice == 4) and data.return_data()[4] == 'Continent':
             data.print_countries()
