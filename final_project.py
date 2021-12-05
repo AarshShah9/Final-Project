@@ -28,6 +28,12 @@ class dataClass():
         position = np.where(self.country_data == self.input)
         return [self.country_data[i][0] for i in position[0] if self.country_data[i][-1] != '']
 
+    def sub_regions_in_cont(self):
+        '''Finds position of sub regions in continent
+        Returns: A list of the sub regions in chosen continent'''
+        position = np.where(self.country_data == self.input)
+        return list(set([self.country_data[i][2] for i in position[0]]))
+
     def countries_in_sub_region(self):
         '''THIS DOESNT WORK Finds positions of sub-regions in region or continent
         Returns: A list of all the countries in the chosen region'''
