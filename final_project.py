@@ -32,9 +32,8 @@ class dataClass():
         '''THIS DOESNT WORK Finds positions of sub-regions in region or continent
         Returns: A list of all the countries in the chosen region'''
         position = np.where(self.country_data == self.input)
-        sub_regions = list(dict.fromkeys(
+        sub_regions = list(set(
             [self.country_data[i][2] for i in position[0]]))
-
         pos = []
         for i in sub_regions:
             pos.append(np.where(self.country_data == i))
@@ -118,9 +117,16 @@ class dataClass():
         plt.xticks(range(2000, 2022, 2))
         plt.show()
 
-    def change_selected(self, input):
-        """THIS DOESNT WORK"""
-        self.input = input
+    def change_selected(self):
+        test_case = dataClass(None,None)
+        user_input = 'not valid'
+        while user_input not in test_case.return_data()[3]:
+            user_input = input('Please enter a Country or a Continent: ').title()
+            if user_input in test_case.return_data()[3]:
+               self.input = user_input
+               self.type = type1(user_input)
+            else:
+                print('You must select a valid region or continent')
 
 
 def menu(data):
@@ -128,7 +134,7 @@ def menu(data):
 
     while user_choice != 0:
         print('\nTo quit select: 0')
-        # print('To change selected country or continent select: 1')
+        print('To change selected country or continent select: 1')
 
         if data.return_data()[4] == 'Continent':
             print('To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2')
@@ -144,11 +150,12 @@ def menu(data):
             data.population_data_country()
         elif (user_choice == 3) and (data.return_data()[4] == 'Continent'):
             data.size_of_region()
-        # elif user_choice == 1:
-        #   new_input = input('Select a new region or continent: ').title()
-        #   data.change_selected(new_input)
+        elif user_choice == 1:
+            data.change_selected()
         elif user_choice == 0:
             quit()
+        elif user_choice == 5:
+            print(data.countries_in_sub_region())
         else:
             print('Please Try again that is an invalid choice')
 
