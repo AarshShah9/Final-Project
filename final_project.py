@@ -61,6 +61,7 @@ class dataClass():
         Mammals: {sums[3]}
         ''')
         print('Total number of endangered species: {}'.format(sum(sums)))
+        print('Average number of endagered species: {}'.format(np.mean(sums)))
         print('Number of endangered species per sq km: {}'.format(sum(sums)/sum(self.area_total())))
         # Creating the bar plot
         plt.bar(['Plants', 'Fish', 'Birds', 'Mammals'], sums, color=['red', 'blue', 'yellow', 'green'],
@@ -95,11 +96,11 @@ class dataClass():
         plt.bar(self.countries_in_region(), self.area_total(), color='red')
         plt.xlabel('Countries')
         plt.ylabel('Size in Square Km')
-        plt.title(f'Different populations for the countries in {self.input}')
+        plt.title(f'Different sizes for the countries in {self.input}')
         plt.xticks(rotation=90)
         plt.show()
 
-    def population_data_country(self):
+    def compute_country_data(self):
         pos = np.where(self.population_data == self.input)
         # list for years
         years = [i for i in range(2000, 2021)]
@@ -129,37 +130,30 @@ class dataClass():
                self.type = type1(user_input)
             else:
                 print('You must select a valid region or continent')
+    
+    def compute_sub_region_continent_data(self):
+        self.size_of_region()
+        self.compute_species_data()
+    
 
 
 def menu(data):
-    user_choice = -1
+    user_choice = ''
 
-    while user_choice != 0:
-        print('\nTo quit select: 0')
-        print('To change selected country or continent select: 1')
+    while user_choice != 'N':
+
+        if user_choice == 'Y':
+            main()
 
         if data.return_data()[4] == 'Continent':
-            print('To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2')
-            print('To see the amount of land area the region takes up select: 3')
-        else:
-            print('To see data on chosen country select: 2')
+            data.compute_sub_region_continent_data()
+        elif data.return_data()[4] == 'Country':
+            data.compute_country_data()
 
-        user_choice = int(input('Enter selection: '))
+        user_choice = input('Would you like to restart?/n Enter Y to restart or N to quit: ').capitalize()
 
-        if (user_choice == 2) and data.return_data()[4] == 'Continent':
-            data.compute_species_data()
-        elif (user_choice == 2) and data.return_data()[4] == 'Country':
-            data.population_data_country()
-        elif (user_choice == 3) and (data.return_data()[4] == 'Continent'):
-            data.size_of_region()
-        elif user_choice == 1:
-            data.change_selected()
-        elif user_choice == 0:
+        if user_choice == 'N':
             quit()
-        elif user_choice == 5:#debugging
-            print(data.area_total())
-        else:
-            print('Please Try again that is an invalid choice')
 
 
 def type1(user_input):
