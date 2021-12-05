@@ -26,7 +26,7 @@ class dataClass():
         '''Finds positions of country in region or continent
         Returns: A list of all the countries in the chosen region'''
         position = np.where(self.country_data == self.input)
-        return [self.country_data[i][0] for i in position[0]]
+        return [self.country_data[i][0] for i in position[0] if self.country_data[i][-1] != '']
 
     def countries_in_sub_region(self):
         '''THIS DOESNT WORK Finds positions of sub-regions in region or continent
@@ -60,7 +60,8 @@ class dataClass():
         Birds: {sums[2]}
         Mammals: {sums[3]}
         ''')
-
+        print('Total number of endangered species: {}'.format(sum(sums)))
+        print('Number of endangered species per sq km: {}'.format(sum(sums)/sum(self.area_total())))
         # Creating the bar plot
         plt.bar(['Plants', 'Fish', 'Birds', 'Mammals'], sums, color=['red', 'blue', 'yellow', 'green'],
                 width=0.5)
@@ -69,30 +70,29 @@ class dataClass():
         plt.title(f'Number of Endangered Species in {self.input}')
         plt.show()
 
-    def size_of_region(self):
-
+    def area_total(self):
+        '''Returns list of all the areas in region/sub_region used for max/sum/min'''
         area_data = []
         for i in self.countries_in_region():
             position = np.where(self.country_data == i)
             (x, y) = position[0][0], position[1][0]
             area_data.append(self.country_data[x][y+3])
+            
+        
+        return [int(i) for i in area_data if i != '']
 
-        for i in area_data:
-            if i == '':
-                area_data.remove(i)
-
-        area_total = (list(map(int, area_data)))
+    def size_of_region(self):
         print(
-            f'\nThe total number of area {self.input} takes up: {sum(area_total)} km^2')
+            f'\nThe total number of area {self.input} takes up: {sum(self.area_total())} km^2')
 
-        region_max = np.max(area_total)
+        region_max = np.max(self.area_total())
         pos = np.where(self.country_data == str(region_max))[0]
         biggest_country = self.country_data[pos][0]
         print(
             f'The largest country in the region is {biggest_country[0]} with an area of {region_max} km^2')
 
         # Creating the bar plot
-        plt.bar(self.countries_in_region(), area_total, color='red')
+        plt.bar(self.countries_in_region(), self.area_total(), color='red')
         plt.xlabel('Countries')
         plt.ylabel('Size in Square Km')
         plt.title(f'Different populations for the countries in {self.input}')
@@ -116,6 +116,8 @@ class dataClass():
         plt.title(f'Population Trend in {self.input}')
         plt.xticks(range(2000, 2022, 2))
         plt.show()
+        self.compute_species_data()
+        print('{} is {} square kilometers'.format(self.country_data[pos[0][0]][0], self.country_data[pos[0][0]][-1]))
 
     def change_selected(self):
         test_case = dataClass(None,None)
@@ -140,7 +142,7 @@ def menu(data):
             print('To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2')
             print('To see the amount of land area the region takes up select: 3')
         else:
-            print('To see population data on chosen country select: 2')
+            print('To see data on chosen country select: 2')
 
         user_choice = int(input('Enter selection: '))
 
@@ -154,8 +156,8 @@ def menu(data):
             data.change_selected()
         elif user_choice == 0:
             quit()
-        elif user_choice == 5:
-            print(data.countries_in_sub_region())
+        elif user_choice == 5:#debugging
+            print(data.area_total())
         else:
             print('Please Try again that is an invalid choice')
 
