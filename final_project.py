@@ -60,14 +60,14 @@ class dataClass():
         sums = [sum(list(map(int, plant_data))), sum(list(map(int, fish_data))), sum(
             list(map(int, bird_data))), sum(list(map(int, mammal_data)))]
 
-        print(f'''Number of endangered species by type in {self.input}:
+        print(f'''\nNumber of endangered species by type in {self.input}:
         Plants: {sums[0]}
         Fish: {sums[1]}
         Birds: {sums[2]}
         Mammals: {sums[3]}
         ''')
         print('Total number of endangered species: {}'.format(sum(sums)))
-        print('Average number of endagered species: {}'.format(np.mean(sums)))
+        print('Average endangered species: {}'.format(np.mean(sums)))
         print('Number of endangered species per sq km: {}'.format(
             sum(sums)/sum(self.area_total())))
         # Creating the bar plot
@@ -79,7 +79,7 @@ class dataClass():
         plt.show()
 
     def area_total(self):
-        '''Returns list of all the areas in region/sub_region used for max/sum/min'''
+        '''Returns list of all the areas in given continent'''
         area_data = []
         for i in self.countries_in_region():
             position = np.where(self.country_data == i)
@@ -102,30 +102,41 @@ class dataClass():
         plt.bar(self.countries_in_region(), self.area_total(), color='red')
         plt.xlabel('Countries')
         plt.ylabel('Size in Square Km')
-        plt.title(f'Different sizes for the countries in {self.input}')
+        plt.title(f'Different size for the countries in {self.input}')
         plt.xticks(rotation=90)
         plt.show()
 
-    def compute_country_data(self):
+    def population_data_country(self):
         pos = np.where(self.population_data == self.input)
         # list for years
         years = [i for i in range(2000, 2021)]
         # creates list using position
         population = list(self.population_data[pos[0][0]])
         del population[0]  # deletes name of country in data
+
+        max_pop = max(population)
+        min_pop = min(population)
+        max_year = np.where(self.population_data[pos[0][0]] == str(max_pop))[
+            0][0]  # finds max year
+        min_year = np.where(self.population_data[pos[0][0]] == str(min_pop))[
+            0][0]  # finds min year
+
         for iteration, i in enumerate(population):
             population[iteration] = int(i)/1000
 
-        print(f'The mean population from 2000-2020 is: {np.mean(population)}')
+        print(
+            f'\nThe mean population from 2000-2020 is: {np.mean(population)} thousand')
+        print('Max population during {} at {} people'.format(
+            1999+max_year, max_pop))  # add 1999 because of index
+        print('Min population during {} at {} people'.format(
+            1999+min_year, min_pop))
+
         plt.plot(years, population, 'r--')
         plt.ylabel('Population in thousands')
         plt.xlabel('Years')
         plt.title(f'Population Trend in {self.input}')
         plt.xticks(range(2000, 2022, 2))
         plt.show()
-        self.compute_species_data()
-        print('{} is {} square kilometers'.format(
-            self.country_data[pos[0][0]][0], self.country_data[pos[0][0]][-1]))
 
     def change_selected(self):
         test_case = dataClass(None, None)
@@ -139,29 +150,58 @@ class dataClass():
             else:
                 print('You must select a valid region or continent')
 
-    def compute_sub_region_continent_data(self):
-        self.size_of_region()
-        self.compute_species_data()
+    def print_country_data(self):
+        index = np.where(self.country_data == self.input)[0][0]
+        print("\n{}'s General Data:".format(self.input))
+        print('\nUN Region: {}'.format(self.country_data[index][1]))
+        print('\nSub Region: {}'.format(self.country_data[index][2]))
+        print('\nSize in sq km: {}'.format(self.country_data[index][3]))
+
+    def print_region_data(self):
+        print("\n{}'s General Data:".format(self.input))
+        print('\nCountries in continent: {}'.format(
+            ', '.join(self.countries_in_region())))
+        print('\nSub regions in continent : {}'.format(
+            ', '.join(self.sub_regions_in_cont())))
 
 
 def menu(data):
-    user_choice = ''
+    user_choice = -1
 
-    while user_choice != 'N':
-
-        if user_choice == 'Y':
-            main()
+    while user_choice != 0:
+        print('\nTo quit select: 0')
+        print('To change selected country or continent select: 1')
 
         if data.return_data()[4] == 'Continent':
-            data.compute_sub_region_continent_data()
-        elif data.return_data()[4] == 'Country':
-            data.compute_country_data()
+            print('To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2')
+            print('To see the amount of land area the region takes up select: 3')
+        else:
+            print('To see threatned species data select: 2')
+            print(
+                'To see population data over the past 20 years on chosen country select: 3')
 
-        user_choice = input(
-            'Would you like to restart?/n Enter Y to restart or N to quit: ').capitalize()
+        print('To see general data select: 4')
 
-        if user_choice == 'N':
+        user_choice = int(input('Enter selection: '))
+
+        if (user_choice == 2):
+            data.compute_species_data()
+        elif (user_choice == 3) and data.return_data()[4] == 'Country':
+            data.population_data_country()
+        elif (user_choice == 3) and (data.return_data()[4] == 'Continent'):
+            data.size_of_region()
+        elif user_choice == 4 and data.return_data()[4] == 'Country':
+            data.print_country_data()
+        elif user_choice == 4:
+            data.print_region_data()
+        elif user_choice == 1:
+            data.change_selected()
+        elif user_choice == 0:
             quit()
+        elif user_choice == 5:  # debugging
+            print(data.area_total())
+        else:
+            print('Please Try again that is an invalid choice')
 
 
 def type1(user_input):
