@@ -35,7 +35,7 @@ class dataClass():
         return list(set([self.country_data[i][2] for i in position[0]]))
 
     def countries_in_sub_region(self):
-        '''THIS DOESNT WORK Finds positions of sub-regions in region or continent
+        '''Finds positions of sub-regions in region or continent
         Returns: A list of all the countries in the chosen region'''
         position = np.where(self.country_data == self.input)
         sub_regions = list(set(
@@ -69,7 +69,7 @@ class dataClass():
         print('Total number of endangered species: {}'.format(sum(sums)))
         print('Average endangered species: {}'.format(np.mean(sums)))
         print('Number of endangered species per sq km: {}'.format(
-            sum(sums)/sum(self.area_total())))
+            sum(sums)/sum(self.region_area_total())))
         # Creating the bar plot
         plt.bar(['Plants', 'Fish', 'Birds', 'Mammals'], sums, color=['red', 'blue', 'yellow', 'green'],
                 width=0.5)
@@ -78,8 +78,8 @@ class dataClass():
         plt.title(f'Number of Endangered Species in {self.input}')
         plt.show()
 
-    def area_total(self):
-        '''Returns list of all the areas in given continent'''
+    def region_area_total(self):
+        """Returns list of all the areas of all the counties in the given region"""
         area_data = []
         for i in self.countries_in_region():
             position = np.where(self.country_data == i)
@@ -88,22 +88,43 @@ class dataClass():
 
         return [int(i) for i in area_data if i != '']
 
+    def subregion_area_total(self):
+        """Returns list of all the areas of the sub-regions in the given region"""
+        area_data = []
+        for i in self.sub_regions_in_cont():
+            position = np.where(self.country_data == i)
+            x = position[0][0]
+            area_data.append(self.country_data[x][3])
+
+        return [int(i) for i in area_data if i != '']
+
     def size_of_region(self):
         print(
-            f'\nThe total number of area {self.input} takes up: {sum(self.area_total())} km^2')
+            f'\nThe total number of area {self.input} takes up: {sum(self.region_area_total())} km^2')
 
-        region_max = np.max(self.area_total())
+        region_max = np.max(self.region_area_total())
         pos = np.where(self.country_data == str(region_max))[0]
         biggest_country = self.country_data[pos][0]
         print(
             f'The largest country in the region is {biggest_country[0]} with an area of {region_max} km^2')
 
-        # Creating the bar plot
-        plt.bar(self.countries_in_region(), self.area_total(), color='red')
+        # Creating the bar plot for the area for each country in the chosen region
+        plt.bar(self.countries_in_region(),
+                self.region_area_total(), color='red')
+        # All formatting including title, x-y labels, and printing the plot
         plt.xlabel('Countries')
         plt.ylabel('Size in Square Km')
         plt.title(f'Different size for the countries in {self.input}')
         plt.xticks(rotation=90)
+        plt.show()
+
+        # Creating the bar plot for the area for each sub-region in the chosen region
+        plt.bar(self.sub_regions_in_cont(),
+                self.subregion_area_total(), color='blue')
+        # All formatting including title, x-y labels, and printing the plot
+        plt.xlabel('Countries')
+        plt.ylabel('Size in Square Km')
+        plt.title(f'Different size for the sub-regions in {self.input}')
         plt.show()
 
     def population_data_country(self):
@@ -199,7 +220,7 @@ def menu(data):
         elif user_choice == 0:
             quit()
         elif user_choice == 5:  # debugging
-            print(data.area_total())
+            print(data.region_area_total())
         else:
             print('Please Try again that is an invalid choice')
 
@@ -221,6 +242,7 @@ def main():
         user_input = input('Please enter a Country or a Continent: ').title()
         if user_input in test1.return_data()[3]:
             data = dataClass(user_input, type1(user_input))
+            print(data.subregion_area_total())
             menu(data)
         else:
             print('You must select a valid region or continent')
