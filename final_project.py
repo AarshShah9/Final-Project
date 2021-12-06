@@ -69,46 +69,60 @@ class dataClass:
     def compute_species_data(self):
         """Method that finds the postions of each species' data, sums the values at
         those positons and prints out the totals in a print statements and plots"""
-        (plant_data, fish_data, bird_data, mammal_data) = ([], [], [], [])
 
+        # Creates empty lists for each type of species.
+        (plant_data, fish_data, bird_data, mammal_data) = ([], [], [], [])
+        # For loop that takes every country in the chosen region.
         for i in self.countries_in_region():
+            # Finds the position of the name of each country in species array.
             position = np.where(self.species_data == i)
             (x, y) = position[0][0], position[1][0]
+            # Then uses the position of the country to find the position
+            # of the species data and add the value there to each respective list.
             plant_data.append(self.species_data[x][y + 1])
             fish_data.append(self.species_data[x][y + 2])
             bird_data.append(self.species_data[x][y + 3])
             mammal_data.append(self.species_data[x][y + 4])
 
+        # Takes the sums of each of the 4 species' lists.
         sums = [
             sum(list(map(int, plant_data))),
             sum(list(map(int, fish_data))),
             sum(list(map(int, bird_data))),
             sum(list(map(int, mammal_data))),
         ]
-
-        print(f"""\nNumber of endangered species by type in {self.input}:
-        Plants: {sums[0]}
-        Fish: {sums[1]}
-        Birds: {sums[2]}
-        Mammals: {sums[3]}
-        """)
+        # Series of print statements that prints out all the species data that was located and computated above.
+        print(f'\nNumber of endangered species by type in {self.input}:')
+        print(f'Plants: {sums[0]}')
+        print(f'Fish: {sums[1]}')
+        print(f'Birds: {sums[2]}')
+        print(f'Mammals: {sums[3]}')
         print("Total number of endangered species: {}".format(sum(sums)))
         print("Average endangered species: {}".format(np.mean(sums)))
         print("Number of endangered species per sq km: {}".format(
             sum(sums) / sum(self.region_area_total())))
         # Creating the bar plot for the species data, which plots the 4 different types of
         # species to the amount of total amount of endangered animals in the region
-        plt.bar(
-            ["Plants", "Fish", "Birds", "Mammals"],
-            sums,
-            color=["red", "blue", "yellow", "green"],
-            width=0.5,
-        )
-        # Formats the bar plot including title, x-y labels and prints the plot.
+        plt.bar(["Plants", "Fish", "Birds", "Mammals"],
+                sums,
+                color=["red", "blue", "yellow", "green"],
+                width=0.5)
+        # Formats the bar plot including title, x-y labels, legend and prints the plot.
         plt.xlabel("Types of Species")
         plt.ylabel("Number of Species")
         plt.title(f"Number of Endangered Species in {self.input}")
         plt.show()
+
+        # # Creating a bar plot that prints out species data base on the sub region
+        # plt.plot([], [],
+        #         'y--', label='Grade 10')
+        # # Formats the bar plot including title, y-label, and legend.
+        # plt.title('Enrollment by Grade')
+        # # Formats the bar plot including x-y labels, legend and prints the plot.
+        # plt.xlabel('Enrollment Year')
+        # plt.ylabel('Number of Students')
+        # plt.legend(loc='upper right')
+        # plt.show()
 
     def region_area_total(self):
         """Method that looks for the postions of all the countries in the chosen
@@ -169,18 +183,20 @@ class dataClass:
 
     def population_data_country(self):
         pos = np.where(self.population_data == self.input)
-        # list for years
+        # List for years.
         years = [i for i in range(2000, 2021)]
-        # creates list using position
+        # Creates list using position.
         population = list(self.population_data[pos[0][0]])
         del population[0]  # deletes name of country in data
 
         max_pop = max(population)
         min_pop = min(population)
-        max_year = np.where(self.population_data[pos[0][0]] == str(
-            max_pop))[0][0]  # finds max year
-        min_year = np.where(self.population_data[pos[0][0]] == str(
-            min_pop))[0][0]  # finds min year
+        # Finds max year
+        max_year = np.where(
+            self.population_data[pos[0][0]] == str(max_pop))[0][0]
+        # Finds min year
+        min_year = np.where(
+            self.population_data[pos[0][0]] == str(min_pop))[0][0]
 
         for iteration, i in enumerate(population):
             population[iteration] = int(i) / 1000
@@ -230,18 +246,25 @@ class dataClass:
 
 
 def menu(data):
-    user_choice = -1
+    """The menu function prints out different options for printing data depending on if 
+    the input was a region or country and takes another input for what the user wants data on.
+    The function then uses a series of conditional statments to call a method from the dataClass that
+    will print out the requested data."""
 
+    # While loop that runs until the user chooses to quit.
+    user_choice = -1
     while user_choice != 0:
+        # Prints out a series of statements for the different options.
         print("\nTo quit select: 0")
         print("To change selected country or continent select: 1")
-
+        # If the place the user chose was a region then these print statements are also printed.
         if data.return_data()[4] == "Continent":
             print(
                 "To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2"
             )
             print(
                 "To see the amount of land area the region takes up select: 3")
+        # If the place the user chose was a country then these print statements are also printed.
         else:
             print("To see threatned species data select: 2")
             print(
@@ -249,9 +272,9 @@ def menu(data):
             )
 
         print("To see general data select: 4")
-
+        # Gets user input in integer form.
         user_choice = int(input("Enter selection: "))
-
+        # Series of conditional statements that call a method from the dataClass depending on the input.
         if user_choice == 2:
             data.compute_species_data()
         elif (user_choice == 3) and data.return_data()[4] == "Country":
@@ -264,10 +287,10 @@ def menu(data):
             data.print_region_data()
         elif user_choice == 1:
             data.change_selected()
+        # If the user choses 'zero' it ends the program.
         elif user_choice == 0:
             quit()
-        elif user_choice == 5:  # debugging
-            print(data.region_area_total())
+        # If the user inputs an invalid integer they are prompted to try again.
         else:
             print("Please Try again that is an invalid choice")
 
@@ -276,7 +299,9 @@ def type1(user_input):
     """Function that determines the charcteristic of the users input (Whether its a region/continent or a country)
     Returns: A string thats either 'Continent' or 'Country'
     """
+    # Creates a test instance of the dataClass to check if users input is a country or a continent.
     test2 = dataClass(user_input, None)
+    # Returns a string depending on the condition.
     return ("Continent" if test2.return_data()[0]
             in test2.return_data()[3][:, 1] else "Country")
 
@@ -285,18 +310,25 @@ def main():
     """Main function for the program that creates an instance of the dataClass that will 
     be accessed throughout the program. And also gets the user input for the country/region 
     and ensures they are valid inputs. Then calls the menu function to continue the program."""
+    # Creates an instance of the dataClass for conditional arguments.
     test1 = dataClass(None, None)
+    # Prints program title.
     print("Eng 233 Multi Region Data")
+    # while loop that ends once the user inputs a valid country.
     user_input = "not valid"
     while user_input not in test1.return_data()[3]:
+        # Gets the users input.
         user_input = input("Please enter a Country or a Continent: ").title()
+        # Checks to see if the input exists within the data files.
         if user_input in test1.return_data()[3]:
+            # Creates the main instance of the data class and calls the menu function.
             data = dataClass(user_input, type1(user_input))
-            print(data.subregion_area_total())
             menu(data)
+        # If the input is not valid the user is prompted to try again.
         else:
             print("You must select a valid region or continent")
 
 
+# Runs the program by calling the main function.
 if __name__ == "__main__":
     main()
