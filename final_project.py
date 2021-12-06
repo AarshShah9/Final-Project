@@ -10,11 +10,13 @@ import matplotlib.pyplot as plt
 class dataClass:
     def __init__(self, input, type):
         """Constructor for the dataClass that sets class variables for the main variables used in the entire program.
-        Variables include: 3 Numpy arrays for the population, threatened species, and country data.
-                           Input variable that stores the chosen region/ country by the user.
-                           Type variable that stores the type of input recieved (country or region/continent)
+        Parameters: 
+            input: Variable for the users input which stores the place selected
+            type: Variable that stores the type of input recieved (country or region/continent).
         """
+        # Input variable that stores the chosen region/ country by the user.
         self.input = input
+        # Variables include: 3 Numpy arrays for the population, threatened species, and country data.
         self.population_data = np.genfromtxt("Population_Data.csv",
                                              delimiter=",",
                                              skip_header=True,
@@ -27,6 +29,7 @@ class dataClass:
                                           delimiter=",",
                                           skip_header=True,
                                           dtype=str)
+        # Type variable that stores the type of input recieved (country or region/continent)
         self.type = type
 
     def return_data(self):
@@ -50,13 +53,13 @@ class dataClass:
         ]
 
     def sub_regions_in_cont(self):
-        """Finds position of sub regions in continent
+        """Finds positions of sub-regions in region or continent
         Returns: A list of the sub regions in chosen continent"""
         position = np.where(self.country_data == self.input)
         return list(set([self.country_data[i][2] for i in position[0]]))
 
     def countries_in_sub_region(self):
-        """Finds positions of sub-regions in region or continent
+        """Finds positions of countries in the sub-regions
         Returns: A list of all the countries in the chosen region"""
         position = np.where(self.country_data == self.input)
         sub_regions = list(set([self.country_data[i][2] for i in position[0]]))
@@ -101,28 +104,19 @@ class dataClass:
         print("Average endangered species: {}".format(np.mean(sums)))
         print("Number of endangered species per sq km: {}".format(
             sum(sums) / sum(self.region_area_total())))
+
         # Creating the bar plot for the species data, which plots the 4 different types of
         # species to the amount of total amount of endangered animals in the region
-        plt.bar(["Plants", "Fish", "Birds", "Mammals"],
-                sums,
-                color=["red", "blue", "yellow", "green"],
-                width=0.5)
+        plt.bar("Plants", sums[0], color="red", width=0.5, label='Plants')
+        plt.bar("Fish", sums[1], color="blue", width=0.5, label='Fish')
+        plt.bar("Birds", sums[2], color="yellow", width=0.5, label='Birds')
+        plt.bar("Mammals", sums[3], color="green", width=0.5, label='Mammals')
         # Formats the bar plot including title, x-y labels, legend and prints the plot.
         plt.xlabel("Types of Species")
         plt.ylabel("Number of Species")
         plt.title(f"Number of Endangered Species in {self.input}")
+        plt.legend(loc='upper right')
         plt.show()
-
-        # # Creating a bar plot that prints out species data base on the sub region
-        # plt.plot([], [],
-        #         'y--', label='Grade 10')
-        # # Formats the bar plot including title, y-label, and legend.
-        # plt.title('Enrollment by Grade')
-        # # Formats the bar plot including x-y labels, legend and prints the plot.
-        # plt.xlabel('Enrollment Year')
-        # plt.ylabel('Number of Students')
-        # plt.legend(loc='upper right')
-        # plt.show()
 
     def region_area_total(self):
         """Method that looks for the postions of all the countries in the chosen
@@ -230,19 +224,21 @@ class dataClass:
             else:
                 print("You must select a valid region or continent")
 
-    def print_country_data(self):
-        index = np.where(self.country_data == self.input)[0][0]
-        print("\n{}'s General Data:".format(self.input))
-        print("\nUN Region: {}".format(self.country_data[index][1]))
-        print("\nSub Region: {}".format(self.country_data[index][2]))
-        print("\nSize in sq km: {}".format(self.country_data[index][3]))
 
-    def print_region_data(self):
-        print("\n{}'s General Data:".format(self.input))
-        print("\nCountries in continent: {}".format(", ".join(
-            self.countries_in_region())))
-        print("\nSub regions in continent : {}".format(", ".join(
-            self.sub_regions_in_cont())))
+# I THINK THIS HAS TO BE REMOVED
+# def print_country_data(self):
+#     index = np.where(self.country_data == self.input)[0][0]
+#     print("\n{}'s General Data:".format(self.input))
+#     print("\nUN Region: {}".format(self.country_data[index][1]))
+#     print("\nSub Region: {}".format(self.country_data[index][2]))
+#     print("\nSize in sq km: {}".format(self.country_data[index][3]))
+
+# def print_region_data(self):
+#     print("\n{}'s General Data:".format(self.input))
+#     print("\nCountries in continent: {}".format(", ".join(
+#         self.countries_in_region())))
+#     print("\nSub regions in continent : {}".format(", ".join(
+#         self.sub_regions_in_cont())))
 
 
 def menu(data):
@@ -271,7 +267,9 @@ def menu(data):
                 "To see population data over the past 20 years on chosen country select: 3"
             )
 
-        print("To see general data select: 4")
+        # I THINK THIS HAS TO BE REMOVED
+        # print("To see general data select: 4")
+
         # Gets user input in integer form.
         user_choice = int(input("Enter selection: "))
         # Series of conditional statements that call a method from the dataClass depending on the input.
@@ -281,10 +279,13 @@ def menu(data):
             data.population_data_country()
         elif (user_choice == 3) and (data.return_data()[4] == "Continent"):
             data.size_of_region()
-        elif user_choice == 4 and data.return_data()[4] == "Country":
-            data.print_country_data()
-        elif user_choice == 4:
-            data.print_region_data()
+
+        # I THINK THIS HAS TO BE REMOVED
+        # elif user_choice == 4 and data.return_data()[4] == "Country":
+        #     data.print_country_data()
+        # elif user_choice == 4:
+        #     data.print_region_data()
+
         elif user_choice == 1:
             data.change_selected()
         # If the user choses 'zero' it ends the program.
