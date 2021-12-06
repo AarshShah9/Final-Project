@@ -15,15 +15,18 @@ class dataClass:
                            Type variable that stores the type of input recieved (country or region/continent)
         """
         self.input = input
-        self.population_data = np.genfromtxt(
-            "Population_Data.csv", delimiter=",", skip_header=True, dtype=str
-        )
-        self.species_data = np.genfromtxt(
-            "Threatened_Species.csv", delimiter=",", skip_header=True, dtype=str
-        )
-        self.country_data = np.genfromtxt(
-            "Country_Data.csv", delimiter=",", skip_header=True, dtype=str
-        )
+        self.population_data = np.genfromtxt("Population_Data.csv",
+                                             delimiter=",",
+                                             skip_header=True,
+                                             dtype=str)
+        self.species_data = np.genfromtxt("Threatened_Species.csv",
+                                          delimiter=",",
+                                          skip_header=True,
+                                          dtype=str)
+        self.country_data = np.genfromtxt("Country_Data.csv",
+                                          delimiter=",",
+                                          skip_header=True,
+                                          dtype=str)
         self.type = type
 
     def return_data(self):
@@ -42,8 +45,7 @@ class dataClass:
         Returns: A list of all the countries in the chosen region"""
         position = np.where(self.country_data == self.input)
         return [
-            self.country_data[i][0]
-            for i in position[0]
+            self.country_data[i][0] for i in position[0]
             if self.country_data[i][-1] != ""
         ]
 
@@ -65,7 +67,8 @@ class dataClass:
         return pos
 
     def compute_species_data(self):
-        """Method that finds the postions of each species' data, sums the values at those positons and prints out the totals in a print statements and plots"""
+        """Method that finds the postions of each species' data, sums the values at
+        those positons and prints out the totals in a print statements and plots"""
         (plant_data, fish_data, bird_data, mammal_data) = ([], [], [], [])
 
         for i in self.countries_in_region():
@@ -83,35 +86,34 @@ class dataClass:
             sum(list(map(int, mammal_data))),
         ]
 
-        print(
-            f"""\nNumber of endangered species by type in {self.input}:
+        print(f"""\nNumber of endangered species by type in {self.input}:
         Plants: {sums[0]}
         Fish: {sums[1]}
         Birds: {sums[2]}
         Mammals: {sums[3]}
-        """
-        )
+        """)
         print("Total number of endangered species: {}".format(sum(sums)))
         print("Average endangered species: {}".format(np.mean(sums)))
-        print(
-            "Number of endangered species per sq km: {}".format(
-                sum(sums) / sum(self.region_area_total())
-            )
-        )
-        # Creating the bar plot
+        print("Number of endangered species per sq km: {}".format(
+            sum(sums) / sum(self.region_area_total())))
+        # Creating the bar plot for the species data, which plots the 4 different types of
+        # species to the amount of total amount of endangered animals in the region
         plt.bar(
             ["Plants", "Fish", "Birds", "Mammals"],
             sums,
             color=["red", "blue", "yellow", "green"],
             width=0.5,
         )
+        # Formats the bar plot including title, x-y labels and prints the plot.
         plt.xlabel("Types of Species")
         plt.ylabel("Number of Species")
         plt.title(f"Number of Endangered Species in {self.input}")
         plt.show()
 
     def region_area_total(self):
-        """Returns list of all the areas of all the counties in the given region"""
+        """Method that looks for the postions of all the countries in the chosen
+        region and then finds the area of each country which is then stored in a list
+        Returns list of all the areas of all the counties in the given region"""
         area_data = []
         for i in self.countries_in_region():
             position = np.where(self.country_data == i)
@@ -121,7 +123,9 @@ class dataClass:
         return [int(i) for i in area_data if i != ""]
 
     def subregion_area_total(self):
-        """Returns list of all the areas of the sub-regions in the given region"""
+        """Method that looks for the postions of all the sub-regions in the chosen
+        region and then finds the area of each sub-region which is then stored in a list
+        Returns list of all the areas of the sub-regions in the given region"""
         area_data = []
         for i in self.sub_regions_in_cont():
             position = np.where(self.country_data == i)
@@ -143,7 +147,9 @@ class dataClass:
         )
 
         # Creating the bar plot for the area for each country in the chosen region
-        plt.bar(self.countries_in_region(), self.region_area_total(), color="red")
+        plt.bar(self.countries_in_region(),
+                self.region_area_total(),
+                color="red")
         # All formatting including title, x-y labels, and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
@@ -152,7 +158,9 @@ class dataClass:
         plt.show()
 
         # Creating the bar plot for the area for each sub-region in the chosen region
-        plt.bar(self.sub_regions_in_cont(), self.subregion_area_total(), color="blue")
+        plt.bar(self.sub_regions_in_cont(),
+                self.subregion_area_total(),
+                color="blue")
         # All formatting including title, x-y labels, and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
@@ -169,12 +177,10 @@ class dataClass:
 
         max_pop = max(population)
         min_pop = min(population)
-        max_year = np.where(self.population_data[pos[0][0]] == str(max_pop))[0][
-            0
-        ]  # finds max year
-        min_year = np.where(self.population_data[pos[0][0]] == str(min_pop))[0][
-            0
-        ]  # finds min year
+        max_year = np.where(self.population_data[pos[0][0]] == str(
+            max_pop))[0][0]  # finds max year
+        min_year = np.where(self.population_data[pos[0][0]] == str(
+            min_pop))[0][0]  # finds min year
 
         for iteration, i in enumerate(population):
             population[iteration] = int(i) / 1000
@@ -182,10 +188,10 @@ class dataClass:
         print(
             f"\nThe mean population from 2000-2020 is: {np.mean(population)} thousand"
         )
-        print(
-            "Max population during {} at {} people".format(1999 + max_year, max_pop)
-        )  # add 1999 because of index
-        print("Min population during {} at {} people".format(1999 + min_year, min_pop))
+        print("Max population during {} at {} people".format(
+            1999 + max_year, max_pop))  # add 1999 because of index
+        print("Min population during {} at {} people".format(
+            1999 + min_year, min_pop))
 
         plt.plot(years, population, "r--")
         plt.ylabel("Population in thousands")
@@ -195,10 +201,13 @@ class dataClass:
         plt.show()
 
     def change_selected(self):
+        """Method that allows the user to change their selected 
+        country/region which then allows them to get data on the new input"""
         test_case = dataClass(None, None)
         user_input = "not valid"
         while user_input not in test_case.return_data()[3]:
-            user_input = input("Please enter a Country or a Continent: ").title()
+            user_input = input(
+                "Please enter a Country or a Continent: ").title()
             if user_input in test_case.return_data()[3]:
                 self.input = user_input
                 self.type = type1(user_input)
@@ -214,14 +223,10 @@ class dataClass:
 
     def print_region_data(self):
         print("\n{}'s General Data:".format(self.input))
-        print(
-            "\nCountries in continent: {}".format(", ".join(self.countries_in_region()))
-        )
-        print(
-            "\nSub regions in continent : {}".format(
-                ", ".join(self.sub_regions_in_cont())
-            )
-        )
+        print("\nCountries in continent: {}".format(", ".join(
+            self.countries_in_region())))
+        print("\nSub regions in continent : {}".format(", ".join(
+            self.sub_regions_in_cont())))
 
 
 def menu(data):
@@ -235,7 +240,8 @@ def menu(data):
             print(
                 "To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2"
             )
-            print("To see the amount of land area the region takes up select: 3")
+            print(
+                "To see the amount of land area the region takes up select: 3")
         else:
             print("To see threatned species data select: 2")
             print(
@@ -267,15 +273,18 @@ def menu(data):
 
 
 def type1(user_input):
+    """Function that determines the charcteristic of the users input (Whether its a region/continent or a country)
+    Returns: A string thats either 'Continent' or 'Country'
+    """
     test2 = dataClass(user_input, None)
-    return (
-        "Continent"
-        if test2.return_data()[0] in test2.return_data()[3][:, 1]
-        else "Country"
-    )
+    return ("Continent" if test2.return_data()[0]
+            in test2.return_data()[3][:, 1] else "Country")
 
 
 def main():
+    """Main function for the program that creates an instance of the dataClass that will 
+    be accessed throughout the program. And also gets the user input for the country/region 
+    and ensures they are valid inputs. Then calls the menu function to continue the program."""
     test1 = dataClass(None, None)
     print("Eng 233 Multi Region Data")
     user_input = "not valid"
