@@ -179,27 +179,32 @@ class dataClass:
         )
 
         # Creating the bar plot for the area for each country in the chosen region
-        plt.bar(self.countries_in_region(),
-                self.region_area_total(),
-                color="red")
+        i = 0
+        while i < len(self.countries_in_region()):
+            plt.bar(self.countries_in_region()[i],
+                    self.region_area_total()[i],
+                    label=self.countries_in_region()[i])
+            i += 1
         # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
         plt.title(f"Different size for the countries in {self.input}")
         plt.xticks(rotation=90)
-        plt.legend()
+        plt.legend(loc='upper right')
         plt.show()
 
         # Creating the bar plot for the area for each sub-region in the chosen region
-        # for i in len(self.sub_regions_in_cont()):
-        plt.bar(self.sub_regions_in_cont(),
-                self.subregion_area_total(),
-                color="blue")
+        i = 0
+        while i < len(self.sub_regions_in_cont()):
+            plt.bar(self.sub_regions_in_cont()[i],
+                    self.subregion_area_total()[i],
+                    label=self.sub_regions_in_cont()[i])
+            i += 1
         # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
         plt.title(f"Different size for the sub-regions in {self.input}")
-        plt.legend()
+        plt.legend(loc='upper right')
         plt.show()
 
     def population_data_country(self):
