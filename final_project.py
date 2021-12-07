@@ -46,26 +46,26 @@ class dataClass:
     def countries_in_region(self):
         """Finds positions of country in region or continent
         Returns: A list of all the countries in the chosen region"""
-        position = np.where(self.country_data == self.input)
+        position = np.where(self.country_data == self.input)#finds position of the region
         return [
             self.country_data[i][0] for i in position[0]
             if self.country_data[i][-1] != ""
-        ]
+        ]#returns a list of the countries using the position and removes any invalida data
 
     def sub_regions_in_cont(self):
         """Finds positions of sub-regions in region or continent
         Returns: A list of the sub regions in chosen continent"""
-        position = np.where(self.country_data == self.input)
-        return list(set([self.country_data[i][2] for i in position[0]]))
+        position = np.where(self.country_data == self.input)#finds postion of continents
+        return list(set([self.country_data[i][2] for i in position[0]]))#makes a set to get rid of duplicates
 
     def countries_in_sub_region(self):
         """Finds positions of countries in the sub-regions
         Returns: A list of all the countries in the chosen region"""
-        position = np.where(self.country_data == self.input)
-        sub_regions = list(set([self.country_data[i][2] for i in position[0]]))
+        position = np.where(self.country_data == self.input)#finds postion of the sub regions or continent
+        sub_regions = list(set([self.country_data[i][2] for i in position[0]]))#makes a list of the sub regions
         pos = []
         for i in sub_regions:
-            pos.append(np.where(self.country_data == i))
+            pos.append(np.where(self.country_data == i))#appends the country to a list
 
         return pos
 
@@ -265,14 +265,14 @@ class dataClass:
     def change_selected(self):
         """Method that allows the user to change their selected 
         country/region which then allows them to get data on the new input"""
-        test_case = dataClass(None, None)
+        test_case = dataClass(None, None)#creates an empty class used for data
         user_input = "not valid"
-        while user_input not in test_case.return_data()[3]:
+        while user_input not in test_case.return_data()[3]:#checks if input is in country data
             user_input = input(
                 "Please enter a Country or a Continent: ").title()
             if user_input in test_case.return_data()[3]:
-                self.input = user_input
-                self.type = type1(user_input)
+                self.input = user_input #sets user input as the new input
+                self.type = type1(user_input)#finds the type
             else:
                 print("You must select a valid region or continent")
 
