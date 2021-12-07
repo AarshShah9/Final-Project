@@ -100,21 +100,45 @@ class dataClass:
         print(f'Fish: {sums[1]}')
         print(f'Birds: {sums[2]}')
         print(f'Mammals: {sums[3]}')
-        print("Total number of endangered species: {}".format(sum(sums)))
-        print("Average endangered species: {}".format(np.mean(sums)))
-        print("Number of endangered species per sq km: {}".format(
+        print('Total number of endangered species: {}'.format(sum(sums)))
+        print('Average endangered species: {}'.format(np.mean(sums)))
+        print('Number of endangered species per sq km: {}'.format(
             sum(sums) / sum(self.region_area_total())))
 
         # Creating the bar plot for the species data, which plots the 4 different types of
         # species to the amount of total amount of endangered animals in the region
-        plt.bar("Plants", sums[0], color="red", width=0.5, label='Plants')
-        plt.bar("Fish", sums[1], color="blue", width=0.5, label='Fish')
-        plt.bar("Birds", sums[2], color="yellow", width=0.5, label='Birds')
-        plt.bar("Mammals", sums[3], color="green", width=0.5, label='Mammals')
+        plt.bar('Plants', sums[0], color='red', width=0.5, label='Plants')
+        plt.bar('Fish', sums[1], color='blue', width=0.5, label='Fish')
+        plt.bar('Birds', sums[2], color='yellow', width=0.5, label='Birds')
+        plt.bar('Mammals', sums[3], color='green', width=0.5, label='Mammals')
         # Formats the bar plot including title, x-y labels, legend and prints the plot.
-        plt.xlabel("Types of Species")
-        plt.ylabel("Number of Species")
-        plt.title(f"Number of Endangered Species in {self.input}")
+        plt.xlabel('Types of Species')
+        plt.ylabel('Number of Endangered Species')
+        plt.title(f'Number of Endangered Species in {self.input} by type')
+        plt.legend(loc='upper right')
+        plt.show()
+
+        # Finds the threatend species density for each type and stores it in a list.
+        density = []
+        for i in range(0, 4):
+            density.append(sums[i] / sum(self.region_area_total()))
+
+        # Creating the bar plot for the species data, which plots the 4 different types of
+        # species to the endangered animals density in the region
+        plt.bar('Plants', density[0], color='red', width=0.5, label='Plants')
+        plt.bar('Fish', density[1], color='blue', width=0.5, label='Fish')
+        plt.bar('Birds', density[2], color='yellow', width=0.5, label='Birds')
+        plt.bar('Mammals',
+                density[3],
+                color='green',
+                width=0.5,
+                label='Mammals')
+        # Formats the bar plot including title, x-y labels, legend and prints the plot.
+        plt.xlabel('Types of Species')
+        plt.ylabel('Number of Endangered Species per Km^2 of land')
+        plt.title(
+            f'Number of Endangered Species per Km^2 of land in {self.input} by type'
+        )
         plt.legend(loc='upper right')
         plt.show()
 
@@ -158,21 +182,24 @@ class dataClass:
         plt.bar(self.countries_in_region(),
                 self.region_area_total(),
                 color="red")
-        # All formatting including title, x-y labels, and printing the plot
+        # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
         plt.title(f"Different size for the countries in {self.input}")
         plt.xticks(rotation=90)
+        plt.legend()
         plt.show()
 
         # Creating the bar plot for the area for each sub-region in the chosen region
+        # for i in len(self.sub_regions_in_cont()):
         plt.bar(self.sub_regions_in_cont(),
                 self.subregion_area_total(),
                 color="blue")
-        # All formatting including title, x-y labels, and printing the plot
+        # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
         plt.title(f"Different size for the sub-regions in {self.input}")
+        plt.legend()
         plt.show()
 
     def population_data_country(self):
@@ -203,11 +230,31 @@ class dataClass:
         print("Min population during {} at {} people".format(
             1999 + min_year, min_pop))
 
-        plt.plot(years, population, "r--")
+        plt.plot(years, population, "r--", label='Population Trend')
+        # Formats the plot including title, x-y labels, x-axis, legend and prints the plot.
         plt.ylabel("Population in thousands")
         plt.xlabel("Years")
         plt.title(f"Population Trend in {self.input}")
         plt.xticks(range(2000, 2022, 2))
+        plt.legend(loc='upper right')
+        plt.show()
+
+        position = np.where(self.country_data == self.input)
+        (x) = position[0][0]
+        area = int(self.country_data[x][3])
+
+        # Computes the population for each year from 2000-2020 and stores it in a list
+        actual_population = [i * 1000 for i in population]
+        density = [i / area for i in actual_population]
+
+        # Ploting population density over 20 years (x-axis: each year, y-axis: density for each year)
+        plt.plot(years, density, "r--", label='Population to Area Trend')
+        # Formats the plot including title, x-y labels, x-axis, legend and prints the plot.
+        plt.ylabel("Population density")
+        plt.xlabel("Years")
+        plt.title(f"Population Density Trend in {self.input}")
+        plt.xticks(range(2000, 2022, 2))
+        plt.legend(loc='upper right')
         plt.show()
 
     def change_selected(self):
@@ -225,22 +272,6 @@ class dataClass:
                 print("You must select a valid region or continent")
 
 
-# I THINK THIS HAS TO BE REMOVED
-# def print_country_data(self):
-#     index = np.where(self.country_data == self.input)[0][0]
-#     print("\n{}'s General Data:".format(self.input))
-#     print("\nUN Region: {}".format(self.country_data[index][1]))
-#     print("\nSub Region: {}".format(self.country_data[index][2]))
-#     print("\nSize in sq km: {}".format(self.country_data[index][3]))
-
-# def print_region_data(self):
-#     print("\n{}'s General Data:".format(self.input))
-#     print("\nCountries in continent: {}".format(", ".join(
-#         self.countries_in_region())))
-#     print("\nSub regions in continent : {}".format(", ".join(
-#         self.sub_regions_in_cont())))
-
-
 def menu(data):
     """The menu function prints out different options for printing data depending on if 
     the input was a region or country and takes another input for what the user wants data on.
@@ -253,23 +284,18 @@ def menu(data):
         # Prints out a series of statements for the different options.
         print("\nTo quit select: 0")
         print("To change selected country or continent select: 1")
+        print(
+            "To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2"
+        )
         # If the place the user chose was a region then these print statements are also printed.
         if data.return_data()[4] == "Continent":
-            print(
-                "To see total number of Plants, Fish, Birds, and Mammals in the chosen region and sub-region select: 2"
-            )
             print(
                 "To see the amount of land area the region takes up select: 3")
         # If the place the user chose was a country then these print statements are also printed.
         else:
-            print("To see threatned species data select: 2")
             print(
-                "To see population data over the past 20 years on chosen country select: 3"
+                "To see population data over the past 20 years on the chosen country select: 3"
             )
-
-        # I THINK THIS HAS TO BE REMOVED
-        # print("To see general data select: 4")
-
         # Gets user input in integer form.
         user_choice = int(input("Enter selection: "))
         # Series of conditional statements that call a method from the dataClass depending on the input.
@@ -279,13 +305,6 @@ def menu(data):
             data.population_data_country()
         elif (user_choice == 3) and (data.return_data()[4] == "Continent"):
             data.size_of_region()
-
-        # I THINK THIS HAS TO BE REMOVED
-        # elif user_choice == 4 and data.return_data()[4] == "Country":
-        #     data.print_country_data()
-        # elif user_choice == 4:
-        #     data.print_region_data()
-
         elif user_choice == 1:
             data.change_selected()
         # If the user choses 'zero' it ends the program.
