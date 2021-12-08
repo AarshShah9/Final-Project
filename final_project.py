@@ -46,26 +46,33 @@ class dataClass:
     def countries_in_region(self):
         """Finds positions of country in region or continent
         Returns: A list of all the countries in the chosen region"""
-        position = np.where(self.country_data == self.input)#finds position of the region
+        #finds position of the region
+        position = np.where(self.country_data == self.input)
+        #returns a list of the countries using the position and removes any invalida data
         return [
             self.country_data[i][0] for i in position[0]
             if self.country_data[i][-1] != ""
-        ]#returns a list of the countries using the position and removes any invalida data
+        ]
 
     def sub_regions_in_cont(self):
         """Finds positions of sub-regions in region or continent
         Returns: A list of the sub regions in chosen continent"""
-        position = np.where(self.country_data == self.input)#finds postion of continents
-        return list(set([self.country_data[i][2] for i in position[0]]))#makes a set to get rid of duplicates
+        #finds postion of continents
+        position = np.where(self.country_data == self.input)
+        #makes a set to get rid of duplicates and returns it as a list
+        return list(set([self.country_data[i][2] for i in position[0]]))
 
     def countries_in_sub_region(self):
         """Finds positions of countries in the sub-regions
         Returns: A list of all the countries in the chosen region"""
-        position = np.where(self.country_data == self.input)#finds postion of the sub regions or continent
-        sub_regions = list(set([self.country_data[i][2] for i in position[0]]))#makes a list of the sub regions
+        #finds postion of the sub regions or continent
+        position = np.where(self.country_data == self.input)
+        #makes a list of the sub regions
+        sub_regions = list(set([self.country_data[i][2] for i in position[0]]))
         pos = []
         for i in sub_regions:
-            pos.append(np.where(self.country_data == i))#appends the country to a list
+            #appends the country to a list
+            pos.append(np.where(self.country_data == i))
 
         return pos
 
@@ -148,10 +155,12 @@ class dataClass:
         Returns list of all the areas of all the counties in the given region"""
         area_data = []
         for i in self.countries_in_region():
+            #finds position of country
             position = np.where(self.country_data == i)
             (x, y) = position[0][0], position[1][0]
+            #appends to the list the area of the country
             area_data.append(self.country_data[x][y + 3])
-
+        #returns the list of area in integers and clears any wrong data
         return [int(i) for i in area_data if i != ""]
 
     def subregion_area_total(self):
@@ -160,10 +169,12 @@ class dataClass:
         Returns list of all the areas of the sub-regions in the given region"""
         area_data = []
         for i in self.sub_regions_in_cont():
+            #finds position
             position = np.where(self.country_data == i)
             x = position[0][0]
+            #appends to a list the area of the countries
             area_data.append(self.country_data[x][3])
-
+        #returns a list of integers of the area of the countries
         return [int(i) for i in area_data if i != ""]
 
     def size_of_region(self):
@@ -213,7 +224,8 @@ class dataClass:
         years = [i for i in range(2000, 2021)]
         # Creates list using position.
         population = list(self.population_data[pos[0][0]])
-        del population[0]  # deletes name of country in data
+        # deletes name of country in data
+        del population[0]  
 
         max_pop = max(population)
         min_pop = min(population)
@@ -225,13 +237,15 @@ class dataClass:
             self.population_data[pos[0][0]] == str(min_pop))[0][0]
 
         for iteration, i in enumerate(population):
+            #divides population by thousand for simpler reading
             population[iteration] = int(i) / 1000
 
         print(
             f"\nThe mean population from 2000-2020 is: {np.mean(population)} thousand"
         )
+        # add 1999 because of index
         print("Max population during {} at {} people".format(
-            1999 + max_year, max_pop))  # add 1999 because of index
+            1999 + max_year, max_pop))  
         print("Min population during {} at {} people".format(
             1999 + min_year, min_pop))
 
@@ -265,15 +279,20 @@ class dataClass:
     def change_selected(self):
         """Method that allows the user to change their selected 
         country/region which then allows them to get data on the new input"""
-        test_case = dataClass(None, None)#creates an empty class used for data
+        #creates an object used for data
+        test_case = dataClass(None, None)
         user_input = "not valid"
-        while user_input not in test_case.return_data()[3]:#checks if input is in country data
+        #checks if input is in country data
+        while user_input not in test_case.return_data()[3]:
             user_input = input(
                 "Please enter a Country or a Continent: ").title()
             if user_input in test_case.return_data()[3]:
-                self.input = user_input #sets user input as the new input
-                self.type = type1(user_input)#finds the type
+                #sets user input as the new input
+                self.input = user_input 
+                #calls function type1 to find the type
+                self.type = type1(user_input)
             else:
+                #for wrong input
                 print("You must select a valid region or continent")
 
 
