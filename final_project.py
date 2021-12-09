@@ -130,7 +130,7 @@ class dataClass:
         # Formats the bar plot including title, x-y labels, legend and prints the plot.
         plt.xlabel('Types of Species')
         plt.ylabel('Number of Endangered Species')
-        plt.title(f'Number of Endangered Species in {self.input} by type')
+        plt.title(f'Number of Endangered Species in {self.input} by Type')
         plt.legend(loc='upper right')
         plt.show()
 
@@ -153,7 +153,7 @@ class dataClass:
         plt.xlabel('Types of Species')
         plt.ylabel('Number of Endangered Species per Km^2 of land')
         plt.title(
-            f'Number of Endangered Species per Km^2 of land in {self.input} by type'
+            f'Number of Endangered Species per Km^2 of Land in {self.input} by Type'
         )
         plt.legend(loc='upper right')
         plt.show()
@@ -214,7 +214,7 @@ class dataClass:
         # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
-        plt.title(f"Different size for the countries in {self.input}")
+        plt.title(f"Different Sizes for the Countries in {self.input}")
         plt.xticks(rotation=90)
         plt.legend(loc='upper right')
         plt.show()
@@ -229,7 +229,7 @@ class dataClass:
         # All formatting including title, x-y labels, legend and printing the plot
         plt.xlabel("Countries")
         plt.ylabel("Size in Square Km")
-        plt.title(f"Different size for the sub-regions in {self.input}")
+        plt.title(f"Different Sizes for the Sub-Regions in {self.input}")
         plt.legend(loc='upper right')
         plt.show()
 
@@ -350,7 +350,8 @@ def menu(data):
                 "To see population data over the past 20 years on the chosen country select: 3"
             )
         # Gets user input in integer form.
-        user_choice = int(input("Enter selection: "))
+        user_choice1 = (input("Enter selection: "))
+        user_choice = int(user_choice1)
         # Series of conditional statements that call a method from the dataClass depending on the input.
         if user_choice == 2:
             data.compute_species_data()
